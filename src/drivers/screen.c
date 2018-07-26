@@ -4,6 +4,7 @@ int get_cursor();
 int get_screen_offset(int col, int rows);
 void set_cursor(int offset);
 void print_at(char* message, int col, int row);
+void print_char(char character, int col, int row, char attribute_byte);
 
 /* Print a char on the screen at col, row, or at cursor position */
 void print_char(char character, int col, int row, char attribute_byte) {
@@ -46,7 +47,7 @@ void print_char(char character, int col, int row, char attribute_byte) {
 	set_cursor(offset);
 }
 
-int gen_screen_offset(int col, int row) {
+int get_screen_offset(int col, int row) {
 	return 2 * (row * MAX_COLS + col);
 }
 
