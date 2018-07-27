@@ -1,6 +1,6 @@
 #ifndef _SCREEN_H
 #define _SCREEN_H
-#include "../kernel/ports.h"
+#include "ports.h"
 
 #define  VIDEO_ADDRESS 0xb8000
 #define  MAX_ROWS  25
@@ -10,5 +10,13 @@
 //  Screen  device I/O ports
 #define  REG_SCREEN_CTRL 0x3D4
 #define  REG_SCREEN_DATA 0x3D5
+
+int get_cursor();
+int get_screen_offset(int col, int rows);
+void set_cursor(int offset);
+void print_at(char* message, int col, int row);
+void print_char(char character, int col, int row, char attribute_byte);
+void print(char* message);
+void clear_screen();
 
 #endif

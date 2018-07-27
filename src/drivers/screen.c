@@ -1,11 +1,5 @@
 #include "screen.h"
 
-int get_cursor();
-int get_screen_offset(int col, int rows);
-void set_cursor(int offset);
-void print_at(char* message, int col, int row);
-void print_char(char character, int col, int row, char attribute_byte);
-
 /* Print a char on the screen at col, row, or at cursor position */
 void print_char(char character, int col, int row, char attribute_byte) {
 	/* Create a byte (char) pointer to the start of video memory */
