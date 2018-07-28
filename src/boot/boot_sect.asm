@@ -31,7 +31,7 @@ load_kernel:
 	call print_string				; print with BIOS
 
 	mov bx, KERNEL_OFFSET			; Set up params for the disk_load routine such that we load
-	mov dh, 2						; the first 15 sectors (excluding the boot sector) from the boot
+	mov dh, 15						; the first 15 sectors (excluding the boot sector) from the boot
 	mov dl, [BOOT_DRIVE]			; disk (which is out kernel code) to address KERNEL_OFFSET
 	call disk_load
 

@@ -1,7 +1,8 @@
-#ifndef _UTIL_H
-#define _UTIL_H
+#ifndef _UTIL_H_
+#define _UTIL_H_
 
 /* Copies size number of BYTES from src to dst*/
-void _mem_cpy(char* src, char* dst, int size); 
+void mem_copy(char* src, char* dst, int size); 
+void int_to_ascii(int input, char* out);
 
 #endif

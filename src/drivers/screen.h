@@ -1,6 +1,8 @@
-#ifndef _SCREEN_H
-#define _SCREEN_H
+#ifndef _SCREEN_H_
+#define _SCREEN_H_
+
 #include "ports.h"
+#include "../kernel/util.h"
 
 #define  VIDEO_ADDRESS 0xb8000
 #define  MAX_ROWS  25
@@ -14,9 +16,10 @@
 int get_cursor();
 int get_screen_offset(int col, int rows);
 void set_cursor(int offset);
-void print_at(char* message, int col, int row);
+void print_at(const char* message, int col, int row);
 void print_char(char character, int col, int row, char attribute_byte);
-void print(char* message);
+void print(const char* message);
 void clear_screen();
+int handle_scrolling(int cursor_offset);
 
 #endif

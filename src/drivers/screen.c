@@ -23,20 +23,21 @@ void print_char(char character, int col, int row, char attribute_byte) {
 	// so it will be advanced to the first col of the next row
 	if(character == '\n') {
 		int rows = offset / (2 * MAX_COLS);
-		offset = get_screen_offset(79, rows);
+		offset = get_screen_offset(0, rows + 1);
 		// Otherwise, write the character and its attribute byte to
 		// video memory at our calculated offset
 	} else {
 		vidmem[offset] = character;
 		vidmem[offset+1] = attribute_byte;
+		offset += 2;
 	}
 
 	// Update the offset to the next character cell, which is
 	// two bytes ahead of the current cell
-	offset += 2;
+	
 	// Make scrolling adjustment, for when we reach the bottom
 	// of the screen
-//	offset = handle_scrolling(offset);
+	offset = handle_scrolling(offset);
 	// Update the cursor position on the screen device
 	set_cursor(offset);
 }
@@ -73,18 +74,29 @@ void set_cursor(int offset) {
 	port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset & 0xff));
 }
 
-void print_at(char* message, int col, int row) {
+void print_at(const char* message, int col, int row) {
+	int offset;
 	// Update the cursor position if col and row are not negative
 	if (col >= 0 && row >= 0)
 		set_cursor(get_screen_offset(col, row));
+	else {
+		//offset = get_cursor();
+		//row = offset / (2 * MAX_COLS);
+		//col = offset - (offset/2);
+	}
 	// Loop through each char of the message and print it
 	int i = 0;
-	while(message[i] != 0)
+	while(message[i] != 0) {
 		print_char(message[i++], col, row, WHITE_ON_BLACK);
+		//offset = get_cursor();
+		//row = offset / (2 * MAX_COLS);
+		//col = offset - (offset/2);
+	}
 }
 
-void print(char* message) {
+void print(const char* message) {
 	print_at(message, -1, -1);
+	return;
 }
 
 void clear_screen() {
@@ -100,3 +112,27 @@ void clear_screen() {
 	// Move the cursor back to the top left
 	set_cursor(get_screen_offset(0, 0));
 }
+
+int handle_scrolling(int cursor_offset) {
+	// We need to scroll if the cursor position is off the edge of the screen
+	if(cursor_offset >= MAX_ROWS * MAX_COLS * 2) {
+		int i;
+		for(i = 1; i < MAX_ROWS; i++) {
+			mem_copy((char*)get_screen_offset(0, i) + VIDEO_ADDRESS,
+				 (char*)get_screen_offset(0, i-1) + VIDEO_ADDRESS,
+				 MAX_COLS * 2);
+		}
+		char *last_line = (char*)get_screen_offset(0, MAX_ROWS-1) + VIDEO_ADDRESS;
+		for(i = 0; i < MAX_COLS; i++)		
+			last_line[i] = 0;
+
+		cursor_offset -= 2 * MAX_COLS;
+
+		return cursor_offset;
+
+	} else {	// This indicates that no scrolling is needed
+		return cursor_offset;
+	}
+
+}
+
